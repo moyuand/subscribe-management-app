@@ -2,7 +2,6 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ codex/create-requirement-document-for-shanxi-ancient-map-cmm1r6 ]
   workflow_dispatch:
 
 permissions:
@@ -25,41 +24,36 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
-      - name: Set BASE_PATH for project/user pages
+      - name: Determine base path
         run: |
           REPO_NAME="${{ github.event.repository.name }}"
-          # If this is a user/organization site (username.github.io), base path should be empty
           if [[ "$REPO_NAME" == *.github.io ]]; then
-            echo "BASE_PATH=" >> $GITHUB_ENV
+            echo "BASE_PATH=/" >> $GITHUB_ENV
           else
-            echo "BASE_PATH=/$REPO_NAME" >> $GITHUB_ENV
+            echo "BASE_PATH=/$REPO_NAME/" >> $GITHUB_ENV
           fi
 
-      - name: Build (Next.js static export)
+      - name: Build project
         env:
           BASE_PATH: ${{ env.BASE_PATH }}
           NODE_ENV: production
-        run: |
-          npm run build
-          # Next.js with output: export writes to `out/`
-          test -d out && echo "Exported to $(pwd)/out" || (echo "No out directory" && exit 1)
+        run: npm run build -- --base="${BASE_PATH}"
 
       - name: Add .nojekyll
         run: |
-          touch out/.nojekyll
+          touch dist/.nojekyll
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: out
+          path: dist
 
   deploy:
     environment:

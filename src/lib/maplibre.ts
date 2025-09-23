@@ -1,39 +1,39 @@
 type MapLibreModule = typeof import('maplibre-gl');
-type MapLibreNamespace = MapLibreModule & { default?: MapLibreModule; workerClass?: typeof Worker };
+type MapLibreNamespace = MapLibreModule & { workerClass?: typeof Worker };
+type MapLibreModuleWithDefault = { default?: MapLibreNamespace };
 
-type MapLibreWithDefault = MapLibreModule & { default?: MapLibreModule };
+let mapLibPromise: Promise<MapLibreNamespace> | null = null;
 
-type MapLibreWorkerModule = { default: typeof Worker };
+async function createMapLibreInstance(): Promise<MapLibreNamespace> {
+  const namespace = (await import('maplibre-gl')) as MapLibreNamespace & MapLibreModuleWithDefault;
+  const maplibre = namespace.default ?? namespace;
 
-const loadMapLibreNamespace = () => import('maplibre-gl') as Promise<MapLibreNamespace>;
+  if (typeof window !== 'undefined') {
+    try {
+      const workerModule = await import('maplibre-gl/dist/maplibre-gl-csp-worker?worker');
+      const workerClass = workerModule.default as typeof Worker;
 
-function assignWorker(module: MapLibreNamespace, workerClass: typeof Worker) {
-  const defaultExport = (module as MapLibreWithDefault).default ?? (module as MapLibreModule);
-  const defaultTarget = defaultExport as MapLibreModule & { workerClass?: typeof Worker };
+      if (!maplibre.workerClass) {
+        maplibre.workerClass = workerClass;
+      }
 
-  if (!defaultTarget.workerClass) {
-    defaultTarget.workerClass = workerClass;
-  }
-
-  if (!module.workerClass) {
-    module.workerClass = workerClass;
-  }
-}
-
-let mapLibPromise: Promise<MapLibreNamespace>;
-
-if (typeof window === 'undefined') {
-  mapLibPromise = loadMapLibreNamespace();
-} else {
-  mapLibPromise = Promise.all([loadMapLibreNamespace(), import('maplibre-gl/dist/maplibre-gl-csp-worker?worker')])
-    .then(([module, workerModule]) => {
-      assignWorker(module, (workerModule as MapLibreWorkerModule).default);
-      return module;
-    })
-    .catch((error) => {
+      if (!namespace.workerClass) {
+        namespace.workerClass = workerClass;
+      }
+    } catch (error) {
       console.error('Failed to register MapLibre worker', error);
-      return loadMapLibreNamespace();
-    });
+    }
+  }
+
+  return maplibre;
 }
 
-export const MAP_LIB_PROMISE = mapLibPromise;
+export function loadMapLibre(): Promise<MapLibreNamespace> {
+  if (!mapLibPromise) {
+    mapLibPromise = createMapLibreInstance();
+  }
+
+  return mapLibPromise;
+}
+
+export const MAP_LIB_PROMISE = loadMapLibre();

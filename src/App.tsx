@@ -122,7 +122,7 @@ export default function App() {
             </p>
           </section>
         </div>
-        <section id="map" className="flex min-h-[60vh] flex-1 flex-col gap-4">
+        <section id="map" className="flex flex-1 flex-col gap-4 lg:max-w-3xl">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold text-white">古建地图</h2>
@@ -137,7 +137,7 @@ export default function App() {
               </p>
             </div>
           </div>
-          <div className="flex-1">
+          <div className="h-[360px] sm:h-[420px] lg:h-[520px]">
             <HeritageMap data={filteredData} selected={selected} onSelect={setSelected} />
           </div>
         </section>

@@ -61,15 +61,15 @@ export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
         return;
       }
 
-      const currentZoom = map.getZoom();
-      const targetZoom = Math.max(heritage.mapZoom ?? DEFAULT_FOCUS_ZOOM, currentZoom);
+      const targetZoom = heritage.mapZoom ?? DEFAULT_FOCUS_ZOOM;
 
+      map.stop();
       map.flyTo({
         center: [heritage.longitude, heritage.latitude],
         zoom: targetZoom,
         duration: 1000,
         essential: true,
-        padding: { top: 48, bottom: 240, left: 72, right: 72 },
+        padding: { top: 48, bottom: 160, left: 72, right: 72 },
       });
     },
     []
@@ -94,22 +94,26 @@ export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
     };
 
     if (map.isStyleLoaded()) {
-      runFocus();
+      if (typeof window !== 'undefined') {
+        window.requestAnimationFrame(runFocus);
+      } else {
+        runFocus();
+      }
       return;
     }
 
     pendingSelectionRef.current = selected;
 
-    const handleIdle = () => {
+    const handleLoad = () => {
       if (pendingSelectionRef.current?.id === selected.id) {
         runFocus();
       }
     };
 
-    map.once('idle', handleIdle);
+    map.once('load', handleLoad);
 
     return () => {
-      map.off('idle', handleIdle);
+      map.off('load', handleLoad);
     };
   }, [focusOnHeritage, selected]);
 
@@ -235,7 +239,7 @@ export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
           </Popup>
         ) : null}
       </Map>
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-950/80 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-slate-950/80 to-transparent" />
     </div>
   );
 }

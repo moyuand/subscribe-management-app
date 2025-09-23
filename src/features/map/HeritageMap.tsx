@@ -1,67 +1,34 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
-import Map, {
-  Layer,
-  MapRef,
-  NavigationControl,
+import { useEffect, useMemo, useRef } from 'react';
+import {
+  GeoJSON,
+  MapContainer,
+  Marker,
   Popup,
-  Source,
-  ViewState,
-} from 'react-map-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
+  TileLayer,
+  ZoomControl,
+  useMap,
+  useMapEvent,
+} from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 import type { Heritage } from '@/types/heritage';
-import type {
-  LngLatBoundsLike,
-  Map as MaplibreMap,
-  StyleSpecification,
-} from 'maplibre-gl';
-import type { FeatureCollection, Point } from 'geojson';
-import type { MapLayerMouseEvent } from 'react-map-gl';
+import type { LatLngBoundsExpression, PathOptions } from 'leaflet';
+import type { FeatureCollection } from 'geojson';
 import { shanxiBoundary, shanxiPrefectures } from '@/data/shanxiBoundary';
-const MAP_LIB_PROMISE = import('maplibre-gl');
-const DEFAULT_FOCUS_ZOOM = 11;
-const SHANXI_BOUNDS: LngLatBoundsLike = [
-  [109.5, 34.3],
-  [114.7, 40.9],
-];
 
-const CHINESE_BASEMAP_STYLE: StyleSpecification = {
-  version: 8,
-  name: 'OpenStreetMap Chinese Raster',
-  sources: {
-    'osm-chinese': {
-      type: 'raster',
-      tiles: [
-        'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      ],
-      tileSize: 256,
-      attribution: '© OpenStreetMap 贡献者',
-      maxzoom: 19,
-    },
-  },
-  layers: [
-    {
-      id: 'osm-chinese-tiles',
-      type: 'raster',
-      source: 'osm-chinese',
-      minzoom: 0,
-      maxzoom: 22,
-    },
-  ],
-};
+const DEFAULT_CENTER: [number, number] = [37.8, 112.5];
+const DEFAULT_ZOOM = 6;
+const DEFAULT_FOCUS_ZOOM = 11;
+const SHANXI_BOUNDS: LatLngBoundsExpression = [
+  [34.3, 109.5],
+  [40.9, 114.7],
+];
 
 interface HeritageMapProps {
   data: Heritage[];
   selected?: Heritage | null;
   onSelect: (heritage: Heritage | null) => void;
 }
-
-const INITIAL_VIEW_STATE: Partial<ViewState> = {
-  latitude: 37.8,
-  longitude: 112.5,
-  zoom: 6,
-};
 
 const DEFAULT_MARKER_IMAGE =
   'data:image/svg+xml;utf8,' +
@@ -105,282 +72,132 @@ const ACTIVE_MARKER_IMAGE =
   </defs>
 </svg>`);
 
-export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
-  const mapRef = useRef<MapRef | null>(null);
-  const pendingSelectionRef = useRef<Heritage | null>(null);
-  const interactiveLayerIds = useMemo(() => ['heritage-markers'], []);
+const BOUNDARY_STYLE: PathOptions = {
+  color: '#38bdf8',
+  weight: 2,
+  fillOpacity: 0,
+  fillColor: '#1e293b',
+};
 
-  const heritagePoints = useMemo<FeatureCollection<Point>>(
-    () => ({
-      type: 'FeatureCollection',
-      features: data.map((heritage) => ({
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [heritage.longitude, heritage.latitude],
-        },
-        properties: {
-          id: heritage.id,
-          name: heritage.name,
-          city: heritage.city,
-          county: heritage.county ?? '',
-          dynasty: heritage.dynasty,
-        },
-      })),
-    }),
-    [data]
-  );
+const PREFECTURE_STYLE: PathOptions = {
+  color: '#38bdf8',
+  weight: 1,
+  opacity: 0.55,
+  dashArray: '2,2',
+  fillOpacity: 0,
+};
 
-  const ensureMarkerImages = useCallback((map: MaplibreMap) => {
-    if (typeof window === 'undefined') {
+function MapFocusHandler({ selected, onSelect }: { selected?: Heritage | null; onSelect: (heritage: Heritage | null) => void }) {
+  const map = useMap();
+  const lastFocusedId = useRef<string | null>(null);
+
+  useEffect(() => {
+    map.setMaxBounds(L.latLngBounds(SHANXI_BOUNDS));
+    map.fitBounds(L.latLngBounds(SHANXI_BOUNDS), {
+      paddingTopLeft: L.point(64, 48),
+      paddingBottomRight: L.point(64, 160),
+      maxZoom: 8,
+    });
+  }, [map]);
+
+  useEffect(() => {
+    if (!selected) {
+      lastFocusedId.current = null;
       return;
     }
 
-    const register = (id: string, src: string) => {
-      if (map.hasImage(id)) {
-        return;
-      }
+    if (lastFocusedId.current === selected.id) {
+      return;
+    }
 
-      const image = new Image(96, 128);
-      image.crossOrigin = 'anonymous';
-      image.onload = () => {
-        if (!map.hasImage(id)) {
-          map.addImage(id, image, { pixelRatio: 2 });
-        }
-      };
-      image.src = src;
-    };
+    lastFocusedId.current = selected.id;
 
-    register('heritage-marker', DEFAULT_MARKER_IMAGE);
-    register('heritage-marker-active', ACTIVE_MARKER_IMAGE);
-  }, []);
+    map.flyTo([selected.latitude, selected.longitude], selected.mapZoom ?? DEFAULT_FOCUS_ZOOM, {
+      animate: true,
+      duration: 1.2,
+      easeLinearity: 0.25,
+    });
+  }, [map, selected]);
 
-  const focusOnHeritage = useCallback(
-    (heritage: Heritage, mapInstance?: MaplibreMap) => {
-      const map = mapInstance ?? mapRef.current?.getMap();
-      if (!map) {
-        return;
-      }
+  useMapEvent('click', () => onSelect(null));
 
-      const targetZoom = heritage.mapZoom ?? DEFAULT_FOCUS_ZOOM;
+  return null;
+}
 
-      map.stop();
-      map.flyTo({
-        center: [heritage.longitude, heritage.latitude],
-        zoom: targetZoom,
-        duration: 1000,
-        essential: true,
-        padding: { top: 48, bottom: 160, left: 72, right: 72 },
-      });
-    },
+export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
+  const defaultMarkerIcon = useMemo(
+    () =>
+      L.icon({
+        iconUrl: DEFAULT_MARKER_IMAGE,
+        iconSize: [48, 64],
+        iconAnchor: [24, 60],
+        popupAnchor: [0, -60],
+        className: 'heritage-marker',
+      }),
     []
   );
 
-  useEffect(() => {
-    const map = mapRef.current?.getMap();
-
-    if (!selected) {
-      pendingSelectionRef.current = null;
-      return;
-    }
-
-    if (!map) {
-      pendingSelectionRef.current = selected;
-      return;
-    }
-
-    const runFocus = () => {
-      pendingSelectionRef.current = null;
-      focusOnHeritage(selected, map);
-    };
-
-    const scheduleFocus = () => {
-      if (typeof window !== 'undefined') {
-        window.requestAnimationFrame(runFocus);
-      } else {
-        runFocus();
-      }
-    };
-
-    const mapWithTilesCheck = map as MaplibreMap & { areTilesLoaded?: () => boolean };
-    const mapTilesLoaded = mapWithTilesCheck.areTilesLoaded ? mapWithTilesCheck.areTilesLoaded() : true;
-
-    if (map.isStyleLoaded() && mapTilesLoaded) {
-      scheduleFocus();
-      return;
-    }
-
-    pendingSelectionRef.current = selected;
-
-    const handleReady = () => {
-      if (pendingSelectionRef.current?.id === selected.id) {
-        scheduleFocus();
-      }
-    };
-
-    map.once('load', handleReady);
-    // Raster样式在首次渲染时可能先触发 load 再加载瓦片，idle 可以兜底确保飞行动画一定执行。
-    map.once('idle', handleReady);
-
-    return () => {
-      map.off('load', handleReady);
-      map.off('idle', handleReady);
-    };
-  }, [focusOnHeritage, selected]);
-
-  const handleMapLoad = useCallback(
-    (event: { target: MaplibreMap }) => {
-      const map = event.target;
-
-      ensureMarkerImages(map);
-
-      map.fitBounds(SHANXI_BOUNDS, {
-        padding: { top: 48, bottom: 48, left: 64, right: 64 },
-        maxZoom: 8,
-        duration: 0,
-      });
-
-      if (pendingSelectionRef.current) {
-        focusOnHeritage(pendingSelectionRef.current, map);
-        pendingSelectionRef.current = null;
-      }
-    },
-    [ensureMarkerImages, focusOnHeritage]
+  const activeMarkerIcon = useMemo(
+    () =>
+      L.icon({
+        iconUrl: ACTIVE_MARKER_IMAGE,
+        iconSize: [52, 68],
+        iconAnchor: [26, 64],
+        popupAnchor: [0, -64],
+        className: 'heritage-marker-active',
+      }),
+    []
   );
-
-  useEffect(() => {
-    const map = mapRef.current?.getMap();
-    if (!map) {
-      return;
-    }
-
-    ensureMarkerImages(map);
-  }, [ensureMarkerImages, heritagePoints]);
-
-  const handleMapClick = useCallback(
-    (event: MapLayerMouseEvent) => {
-      const feature = event.features?.find((item) => item.layer.id === 'heritage-markers');
-      const featureId = feature?.properties?.id as string | undefined;
-
-      if (featureId) {
-        const heritage = data.find((item) => item.id === featureId);
-        if (heritage) {
-          onSelect(heritage);
-          return;
-        }
-      }
-
-      onSelect(null);
-    },
-    [data, onSelect]
-  );
-
-  useEffect(() => {
-    const map = mapRef.current?.getMap();
-    if (!map) {
-      return;
-    }
-
-    const handleEnter = () => {
-      map.getCanvas().style.cursor = 'pointer';
-    };
-
-    const handleLeave = () => {
-      map.getCanvas().style.cursor = '';
-    };
-
-    map.on('mouseenter', 'heritage-markers', handleEnter);
-    map.on('mouseleave', 'heritage-markers', handleLeave);
-
-    return () => {
-      map.off('mouseenter', 'heritage-markers', handleEnter);
-      map.off('mouseleave', 'heritage-markers', handleLeave);
-      map.getCanvas().style.cursor = '';
-    };
-  }, [heritagePoints]);
 
   return (
     <div className="relative h-full w-full overflow-hidden rounded-3xl border border-white/10">
-      <Map
-        id="heritage-map"
-        ref={mapRef}
-        mapStyle={CHINESE_BASEMAP_STYLE}
-        initialViewState={INITIAL_VIEW_STATE}
-        attributionControl
-        style={{ width: '100%', height: '100%' }}
-        reuseMaps
-        mapLib={MAP_LIB_PROMISE}
-        maxBounds={SHANXI_BOUNDS}
-        interactiveLayerIds={interactiveLayerIds}
-        onClick={handleMapClick}
-        onLoad={handleMapLoad}
+      <MapContainer
+        center={DEFAULT_CENTER}
+        zoom={DEFAULT_ZOOM}
+        className="h-full w-full"
+        zoomControl={false}
+        minZoom={5}
+        maxZoom={16}
+        scrollWheelZoom
+        preferCanvas
       >
-        <Source id="heritage-points" type="geojson" data={heritagePoints}>
-          <Layer
-            id="heritage-markers"
-            type="symbol"
-            layout={{
-              'icon-image': [
-                'case',
-                ['==', ['get', 'id'], selected?.id ?? ''],
-                'heritage-marker-active',
-                'heritage-marker',
-              ],
-              'icon-size': [
-                'case',
-                ['==', ['get', 'id'], selected?.id ?? ''],
-                0.7,
-                0.6,
-              ],
-              'icon-anchor': 'bottom',
-              'icon-allow-overlap': true,
-              'icon-offset': [0, -12],
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution="© OpenStreetMap 贡献者"
+          maxZoom={19}
+        />
+        <GeoJSON data={shanxiBoundary as FeatureCollection} style={() => BOUNDARY_STYLE} interactive={false} />
+        <GeoJSON data={shanxiPrefectures as FeatureCollection} style={() => PREFECTURE_STYLE} interactive={false} />
+        {data.map((heritage) => (
+          <Marker
+            key={heritage.id}
+            position={[heritage.latitude, heritage.longitude]}
+            icon={selected?.id === heritage.id ? activeMarkerIcon : defaultMarkerIcon}
+            eventHandlers={{
+              click: (event) => {
+                event.originalEvent?.stopPropagation();
+                onSelect(heritage);
+              },
             }}
           />
-        </Source>
-        <Source id="shanxi-boundary" type="geojson" data={shanxiBoundary}>
-          <Layer
-            id="shanxi-fill"
-            type="fill"
-            paint={{
-              'fill-color': '#1e293b',
-              'fill-opacity': 0.85,
-            }}
-          />
-          <Layer
-            id="shanxi-outline"
-            type="line"
-            paint={{
-              'line-color': '#38bdf8',
-              'line-width': 2,
-              'line-opacity': 0.9,
-            }}
-          />
-        </Source>
-        <Source id="shanxi-prefectures" type="geojson" data={shanxiPrefectures}>
-          <Layer
-            id="shanxi-prefecture-outline"
-            type="line"
-            paint={{
-              'line-color': '#38bdf8',
-              'line-width': 1,
-              'line-dasharray': [2, 2],
-              'line-opacity': 0.55,
-            }}
-          />
-        </Source>
-        <NavigationControl position="top-left" visualizePitch={false} />
+        ))}
         {selected ? (
           <Popup
-            anchor="top"
+            position={[selected.latitude, selected.longitude]}
             closeOnClick={false}
-            longitude={selected.longitude}
-            latitude={selected.latitude}
-            onClose={() => onSelect(null)}
-            className="max-w-xs rounded-2xl bg-slate-900/95 text-white"
-            focusAfterOpen={false}
+            autoPan={false}
+            className="max-w-xs overflow-hidden rounded-2xl bg-slate-900/95 text-white shadow-xl"
+            eventHandlers={{ close: () => onSelect(null) }}
           >
             <div className="flex flex-col gap-2">
+              {selected.images?.length ? (
+                <img
+                  src={selected.images[0]}
+                  alt={`${selected.name} 风貌插画`}
+                  className="h-32 w-full rounded-xl object-cover"
+                  loading="lazy"
+                />
+              ) : null}
               <h3 className="text-lg font-semibold text-brand-200">{selected.name}</h3>
               <p className="text-xs text-white/60">
                 {selected.city}
@@ -397,8 +214,9 @@ export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
             </div>
           </Popup>
         ) : null}
-      </Map>
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-slate-950/80 to-transparent" />
+        <ZoomControl position="topleft" />
+        <MapFocusHandler selected={selected} onSelect={onSelect} />
+      </MapContainer>
     </div>
   );
 }

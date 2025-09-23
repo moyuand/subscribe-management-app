@@ -4,7 +4,7 @@ export function Header() {
   const { search, setSearch } = useFilters();
 
   return (
-    <header className="flex flex-col gap-4 border-b border-white/10 bg-slate-950/80 px-6 py-4 backdrop-blur">
+    <header className="sticky top-0 z-50 flex flex-col gap-4 border-b border-white/10 bg-slate-950/80 px-6 py-4 backdrop-blur">
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-sm uppercase tracking-[0.4em] text-brand-300">Shanxi Heritage Atlas</p>

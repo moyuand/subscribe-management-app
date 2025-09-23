@@ -93,27 +93,37 @@ export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
       focusOnHeritage(selected, map);
     };
 
-    if (map.isStyleLoaded()) {
+    const scheduleFocus = () => {
       if (typeof window !== 'undefined') {
         window.requestAnimationFrame(runFocus);
       } else {
         runFocus();
       }
+    };
+
+    const mapWithTilesCheck = map as MaplibreMap & { areTilesLoaded?: () => boolean };
+    const mapTilesLoaded = mapWithTilesCheck.areTilesLoaded ? mapWithTilesCheck.areTilesLoaded() : true;
+
+    if (map.isStyleLoaded() && mapTilesLoaded) {
+      scheduleFocus();
       return;
     }
 
     pendingSelectionRef.current = selected;
 
-    const handleLoad = () => {
+    const handleReady = () => {
       if (pendingSelectionRef.current?.id === selected.id) {
-        runFocus();
+        scheduleFocus();
       }
     };
 
-    map.once('load', handleLoad);
+    map.once('load', handleReady);
+    // Raster样式在首次渲染时可能先触发 load 再加载瓦片，idle 可以兜底确保飞行动画一定执行。
+    map.once('idle', handleReady);
 
     return () => {
-      map.off('load', handleLoad);
+      map.off('load', handleReady);
+      map.off('idle', handleReady);
     };
   }, [focusOnHeritage, selected]);
 

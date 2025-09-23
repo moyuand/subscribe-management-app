@@ -13,8 +13,7 @@ import type { LngLatBoundsLike, Map as MaplibreMap, StyleSpecification } from 'm
 import type { FeatureCollection, Point } from 'geojson';
 import type { MapLayerMouseEvent } from 'react-map-gl';
 import { shanxiBoundary, shanxiPrefectures } from '@/data/shanxiBoundary';
-
-const MAP_LIB_PROMISE = import('maplibre-gl');
+import { MAP_LIB_PROMISE } from '@/lib/maplibre';
 const DEFAULT_FOCUS_ZOOM = 11;
 const SHANXI_BOUNDS: LngLatBoundsLike = [
   [109.5, 34.3],

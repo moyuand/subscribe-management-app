@@ -10,6 +10,7 @@ import Map, {
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { Heritage } from '@/types/heritage';
 import maplibregl from 'maplibre-gl';
+import MapLibreWorker from 'maplibre-gl/dist/maplibre-gl-csp-worker?worker';
 import type { LngLatBoundsLike, Map as MaplibreMap, StyleSpecification } from 'maplibre-gl';
 import type { FeatureCollection, Point } from 'geojson';
 import type { MapLayerMouseEvent } from 'react-map-gl';
@@ -100,6 +101,10 @@ const ACTIVE_MARKER_IMAGE =
     </linearGradient>
   </defs>
 </svg>`);
+
+if (typeof window !== 'undefined' && !(maplibregl as { workerClass?: typeof Worker }).workerClass) {
+  (maplibregl as { workerClass?: typeof Worker }).workerClass = MapLibreWorker;
+}
 
 export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
   const mapRef = useRef<MapRef | null>(null);

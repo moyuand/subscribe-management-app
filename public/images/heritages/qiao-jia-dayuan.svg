@@ -1,0 +1,31 @@
+<svg width="800" height="480" viewBox="0 0 800 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e2431" />
+      <stop offset="50%" stop-color="#2f3b4f" />
+      <stop offset="100%" stop-color="#9a7b55" />
+    </linearGradient>
+    <linearGradient id="house" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ecd0a2" />
+      <stop offset="100%" stop-color="#9b6c3c" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="480" fill="url(#bg)" />
+  <g opacity="0.3">
+    <circle cx="620" cy="96" r="48" fill="#f6deae" />
+  </g>
+  <g transform="translate(120 210)">
+    <rect x="0" y="120" width="600" height="70" fill="#2c2a2b" opacity="0.6" />
+    <rect x="40" y="60" width="520" height="110" fill="#4b3a2c" />
+    <rect x="120" y="0" width="360" height="70" fill="url(#house)" />
+    <rect x="80" y="52" width="440" height="16" fill="#3a2a1e" />
+    <rect x="120" y="26" width="360" height="38" fill="#3a2a1e" opacity="0.7" />
+    <rect x="150" y="30" width="80" height="28" fill="#17110d" />
+    <rect x="270" y="30" width="80" height="28" fill="#17110d" />
+    <rect x="390" y="30" width="80" height="28" fill="#17110d" />
+    <rect x="250" y="-30" width="120" height="28" fill="#7c4c24" />
+    <path d="M120 0H480L440 -50H160L120 0Z" fill="#7c4c24" />
+  </g>
+  <text x="60" y="78" fill="#f6f2ea" font-family="'Noto Sans SC', 'Source Han Sans SC', sans-serif" font-size="40" font-weight="700">乔家大院</text>
+  <text x="60" y="118" fill="#f6f2ea" font-family="'Noto Sans SC', sans-serif" font-size="20" opacity="0.85">晋商宅院典范 · 祁县</text>
+</svg>

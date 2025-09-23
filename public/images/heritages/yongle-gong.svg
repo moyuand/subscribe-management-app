@@ -1,0 +1,31 @@
+<svg width="800" height="480" viewBox="0 0 800 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#122033" />
+      <stop offset="45%" stop-color="#213a53" />
+      <stop offset="100%" stop-color="#50809c" />
+    </linearGradient>
+    <linearGradient id="dao" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f7d7a8" />
+      <stop offset="100%" stop-color="#b36f3a" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="480" fill="url(#bg)" />
+  <g opacity="0.34">
+    <circle cx="150" cy="92" r="48" fill="#f4e4b2" />
+  </g>
+  <g transform="translate(110 210)">
+    <rect x="0" y="120" width="600" height="72" fill="#1f3144" opacity="0.6" />
+    <rect x="60" y="50" width="480" height="110" fill="#27475f" />
+    <rect x="140" y="0" width="340" height="70" fill="url(#dao)" />
+    <rect x="100" y="52" width="420" height="18" fill="#3f2b1b" />
+    <rect x="140" y="26" width="340" height="38" fill="#3f2b1b" opacity="0.7" />
+    <rect x="168" y="30" width="70" height="28" fill="#192026" />
+    <rect x="278" y="30" width="70" height="28" fill="#192026" />
+    <rect x="388" y="30" width="70" height="28" fill="#192026" />
+    <rect x="240" y="-28" width="120" height="28" fill="#8a4f2b" />
+    <path d="M140 0H480L440 -50H180L140 0Z" fill="#8a4f2b" />
+  </g>
+  <text x="60" y="78" fill="#f2f0e9" font-family="'Noto Sans SC', 'Source Han Sans SC', sans-serif" font-size="40" font-weight="700">永乐宫</text>
+  <text x="60" y="118" fill="#f2f0e9" font-family="'Noto Sans SC', sans-serif" font-size="20" opacity="0.85">元代道教宫观 · 运城</text>
+</svg>

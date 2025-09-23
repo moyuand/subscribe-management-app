@@ -1,33 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import Map, {
-  Layer,
-  MapRef,
-  Marker,
-  NavigationControl,
-  Popup,
-  Source,
-  ViewState,
-} from 'react-map-gl';
+import Map, { Layer, MapRef, Marker, NavigationControl, Popup, Source, ViewState } from 'react-map-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { Heritage } from '@/types/heritage';
-import type { LngLatBoundsLike, Map as MaplibreMap, StyleSpecification } from 'maplibre-gl';
+import type { LngLatBoundsLike, Map as MaplibreMap } from 'maplibre-gl';
 import { shanxiBoundary, shanxiPrefectures } from '@/data/shanxiBoundary';
-
-const MAP_STYLE: StyleSpecification = {
-  version: 8,
-  name: 'Shanxi Heritage Base',
-  glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
-  sources: {},
-  layers: [
-    {
-      id: 'background',
-      type: 'background',
-      paint: {
-        'background-color': '#0f172a',
-      },
-    },
-  ],
-};
+const MAP_STYLE_URL = 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json';
 const MAP_LIB_PROMISE = import('maplibre-gl');
 const DEFAULT_FOCUS_ZOOM = 11;
 const SHANXI_BOUNDS: LngLatBoundsLike = [
@@ -91,6 +68,12 @@ export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
 
   const handleMapLoad = useCallback(
     (event: { target: MaplibreMap }) => {
+      event.target.fitBounds(SHANXI_BOUNDS, {
+        padding: { top: 48, bottom: 48, left: 64, right: 64 },
+        maxZoom: 8,
+        duration: 0,
+      });
+
       if (pendingSelectionRef.current) {
         focusOnHeritage(pendingSelectionRef.current, event.target);
         pendingSelectionRef.current = null;
@@ -134,7 +117,7 @@ export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
       <Map
         id="heritage-map"
         ref={mapRef}
-        mapStyle={MAP_STYLE}
+        mapStyle={MAP_STYLE_URL}
         initialViewState={INITIAL_VIEW_STATE}
         attributionControl
         style={{ width: '100%', height: '100%' }}

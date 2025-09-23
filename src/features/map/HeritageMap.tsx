@@ -50,20 +50,41 @@ export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
   );
 
   useEffect(() => {
+    const map = mapRef.current?.getMap();
+
     if (!selected) {
       pendingSelectionRef.current = null;
       return;
     }
 
-    const map = mapRef.current?.getMap();
-
-    if (!map || !map.isStyleLoaded()) {
+    if (!map) {
       pendingSelectionRef.current = selected;
       return;
     }
 
-    pendingSelectionRef.current = null;
-    focusOnHeritage(selected, map);
+    const runFocus = () => {
+      pendingSelectionRef.current = null;
+      focusOnHeritage(selected, map);
+    };
+
+    if (map.isStyleLoaded()) {
+      runFocus();
+      return;
+    }
+
+    pendingSelectionRef.current = selected;
+
+    const handleIdle = () => {
+      if (pendingSelectionRef.current?.id === selected.id) {
+        runFocus();
+      }
+    };
+
+    map.once('idle', handleIdle);
+
+    return () => {
+      map.off('idle', handleIdle);
+    };
   }, [focusOnHeritage, selected]);
 
   const handleMapLoad = useCallback(

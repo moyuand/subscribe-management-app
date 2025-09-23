@@ -1,12 +1,39 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import Map, { MapRef, Marker, NavigationControl, Popup, ViewState } from 'react-map-gl';
+import Map, {
+  Layer,
+  MapRef,
+  Marker,
+  NavigationControl,
+  Popup,
+  Source,
+  ViewState,
+} from 'react-map-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { Heritage } from '@/types/heritage';
-import type { Map as MaplibreMap } from 'maplibre-gl';
+import type { LngLatBoundsLike, Map as MaplibreMap, StyleSpecification } from 'maplibre-gl';
+import { shanxiBoundary, shanxiPrefectures } from '@/data/shanxiBoundary';
 
-const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json';
+const MAP_STYLE: StyleSpecification = {
+  version: 8,
+  name: 'Shanxi Heritage Base',
+  glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
+  sources: {},
+  layers: [
+    {
+      id: 'background',
+      type: 'background',
+      paint: {
+        'background-color': '#0f172a',
+      },
+    },
+  ],
+};
 const MAP_LIB_PROMISE = import('maplibre-gl');
 const DEFAULT_FOCUS_ZOOM = 11;
+const SHANXI_BOUNDS: LngLatBoundsLike = [
+  [109.5, 34.3],
+  [114.7, 40.9],
+];
 
 interface HeritageMapProps {
   data: Heritage[];
@@ -113,9 +140,41 @@ export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
         style={{ width: '100%', height: '100%' }}
         reuseMaps
         mapLib={MAP_LIB_PROMISE}
+        maxBounds={SHANXI_BOUNDS}
         onClick={() => onSelect(null)}
         onLoad={handleMapLoad}
       >
+        <Source id="shanxi-boundary" type="geojson" data={shanxiBoundary}>
+          <Layer
+            id="shanxi-fill"
+            type="fill"
+            paint={{
+              'fill-color': '#1e293b',
+              'fill-opacity': 0.85,
+            }}
+          />
+          <Layer
+            id="shanxi-outline"
+            type="line"
+            paint={{
+              'line-color': '#38bdf8',
+              'line-width': 2,
+              'line-opacity': 0.9,
+            }}
+          />
+        </Source>
+        <Source id="shanxi-prefectures" type="geojson" data={shanxiPrefectures}>
+          <Layer
+            id="shanxi-prefecture-outline"
+            type="line"
+            paint={{
+              'line-color': '#38bdf8',
+              'line-width': 1,
+              'line-dasharray': [2, 2],
+              'line-opacity': 0.55,
+            }}
+          />
+        </Source>
         <NavigationControl position="top-left" visualizePitch={false} />
         {markers}
         {selected ? (

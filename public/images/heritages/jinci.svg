@@ -1,0 +1,31 @@
+<svg width="800" height="480" viewBox="0 0 800 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#112d2e" />
+      <stop offset="45%" stop-color="#1c4a4e" />
+      <stop offset="100%" stop-color="#6fa397" />
+    </linearGradient>
+    <linearGradient id="temple" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f3d6a3" />
+      <stop offset="100%" stop-color="#c07b3b" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="480" fill="url(#bg)" />
+  <g opacity="0.3">
+    <circle cx="620" cy="86" r="46" fill="#f7e0a6" />
+  </g>
+  <g transform="translate(120 210)">
+    <rect x="0" y="120" width="600" height="70" fill="#17393d" opacity="0.6" />
+    <rect x="60" y="60" width="480" height="90" fill="#1f544f" />
+    <rect x="120" y="0" width="360" height="70" fill="url(#temple)" />
+    <rect x="80" y="50" width="440" height="18" fill="#3b2a1d" />
+    <rect x="120" y="24" width="360" height="40" fill="#3b2a1d" opacity="0.65" />
+    <rect x="140" y="28" width="80" height="32" fill="#0f1f28" />
+    <rect x="240" y="28" width="80" height="32" fill="#0f1f28" />
+    <rect x="340" y="28" width="80" height="32" fill="#0f1f28" />
+    <rect x="220" y="-30" width="120" height="30" fill="#8f3d2c" />
+    <path d="M120 0H480L440 -50H160L120 0Z" fill="#8f3d2c" />
+  </g>
+  <text x="60" y="80" fill="#f3f1e6" font-family="'Noto Sans SC', 'Source Han Sans SC', sans-serif" font-size="40" font-weight="700">晋祠</text>
+  <text x="60" y="118" fill="#f3f1e6" font-family="'Noto Sans SC', sans-serif" font-size="20" opacity="0.85">北魏至元代古建群 · 太原</text>
+</svg>

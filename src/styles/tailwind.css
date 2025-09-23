@@ -14,7 +14,6 @@ a {
   @apply text-brand-400 hover:text-brand-300;
 }
 
-.mapboxgl-ctrl-logo,
-.maplibregl-ctrl-logo {
-  display: none !important;
+.leaflet-control-attribution {
+  @apply rounded-full bg-slate-900/80 px-2 py-1 text-[11px] text-white/70 backdrop-blur;
 }

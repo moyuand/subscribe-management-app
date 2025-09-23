@@ -19,7 +19,7 @@ export const heritages: Heritage[] = [
     highlights: ['世界文化遗产', '石雕艺术宝库', '北魏皇家石窟寺'],
     description:
       '云冈石窟始凿于北魏文成帝兴安二年，是中国现存规模最大的石窟群之一，石雕造像巍峨壮观，体现了中西文化的交融。',
-    images: ['https://example.com/images/yungang-1.jpg'],
+    images: ['/images/heritages/yungang-shiku.svg'],
   },
   {
     id: 'pingyao-gucheng',
@@ -39,7 +39,7 @@ export const heritages: Heritage[] = [
     highlights: ['世界文化遗产', '保存完好的明清古城格局'],
     description:
       '平遥古城始建于西周宣王时期，明清时期达到鼎盛，城墙、街巷、民居格局完整，展现了晋商文化的繁荣。',
-    images: ['https://example.com/images/pingyao-1.jpg'],
+    images: ['/images/heritages/pingyao-gucheng.svg'],
   },
   {
     id: 'yingxian-muta',
@@ -60,7 +60,7 @@ export const heritages: Heritage[] = [
     highlights: ['世界最高木结构塔式建筑', '辽代建筑杰作'],
     description:
       '应县木塔建于辽清宁二年，通高67.31米，全塔不用铁钉，结构精巧，是中国古代木构建筑的巅峰之作。',
-    images: ['https://example.com/images/yingxian-1.jpg'],
+    images: ['/images/heritages/yingxian-muta.svg'],
   },
   {
     id: 'jinci',
@@ -80,7 +80,7 @@ export const heritages: Heritage[] = [
     highlights: ['难老泉', '侍女像', '圣母殿飞檐斗拱'],
     description:
       '晋祠位于太原晋源区悬瓮山麓，殿宇、楼阁、亭台错落有致，以祀周武王次子叔虞而得名，融合北朝至元代建筑艺术。',
-    images: ['https://example.com/images/jinci-1.jpg'],
+    images: ['/images/heritages/jinci.svg'],
   },
   {
     id: 'shuanglin-si',
@@ -100,7 +100,7 @@ export const heritages: Heritage[] = [
     highlights: ['彩塑艺术瑰宝', '二十八宿殿'],
     description:
       '双林寺创建于北齐时期，以大量保存完好的彩塑闻名，展现了明清时期民间艺术的独特风貌。',
-    images: ['https://example.com/images/shuanglin-1.jpg'],
+    images: ['/images/heritages/shuanglin-si.svg'],
   },
   {
     id: 'xuankong-si',
@@ -120,7 +120,7 @@ export const heritages: Heritage[] = [
     highlights: ['恒山悬崖古建奇观', '三教合一建筑布局'],
     description:
       '悬空寺依托恒山峭壁修建，主殿半悬半立，构件以榫卯相扣，被誉为“悬在空中的寺院”，体现出古代工匠的大胆创意。',
-    images: ['https://example.com/images/xuankong-1.jpg'],
+    images: ['/images/heritages/xuankong-si.svg'],
   },
   {
     id: 'yongle-gong',
@@ -140,7 +140,7 @@ export const heritages: Heritage[] = [
     highlights: ['元代道教宫观', '壁画艺术宝库'],
     description:
       '永乐宫原为道教三清殿，保存有精美的元代壁画群，色彩艳丽、线条流畅，被誉为“东方艺术画廊”。',
-    images: ['https://example.com/images/yongle-1.jpg'],
+    images: ['/images/heritages/yongle-gong.svg'],
   },
   {
     id: 'qiao-jia-dayuan',
@@ -160,7 +160,7 @@ export const heritages: Heritage[] = [
     highlights: ['晋商宅院典范', '三雕艺术集大成'],
     description:
       '乔家大院始建于清乾隆年间，院落布局严谨、雕刻精美，是晋商文化与民居建筑的代表。',
-    images: ['https://example.com/images/qiao-1.jpg'],
+    images: ['/images/heritages/qiao-jia-dayuan.svg'],
   },
   {
     id: 'yanmen-guan',
@@ -180,7 +180,7 @@ export const heritages: Heritage[] = [
     highlights: ['长城关隘险要', '军事防御重镇'],
     description:
       '雁门关素有“天下九塞”之首的美誉，自古为兵家必争之地，关城依山而建，雄踞雁门山口。',
-    images: ['https://example.com/images/yanmen-1.jpg'],
+    images: ['/images/heritages/yanmen-guan.svg'],
   },
   {
     id: 'huayan-si',
@@ -199,7 +199,7 @@ export const heritages: Heritage[] = [
     highlights: ['辽金佛教建筑遗存', '大雄宝殿木构杰作'],
     description:
       '华严寺位于大同古城内，辽金时期曾为华严宗中心寺院，其大雄宝殿与薄伽教藏殿展示了北方佛寺的典雅风格。',
-    images: ['https://example.com/images/huayan-1.jpg'],
+    images: ['/images/heritages/huayan-si.svg'],
   },
 ];
 

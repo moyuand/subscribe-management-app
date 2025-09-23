@@ -1,0 +1,29 @@
+<svg width="800" height="480" viewBox="0 0 800 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2f3e7c" />
+      <stop offset="50%" stop-color="#4c6f9b" />
+      <stop offset="100%" stop-color="#dcb980" />
+    </linearGradient>
+    <linearGradient id="rock" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e4c6a1" />
+      <stop offset="100%" stop-color="#c9924f" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="480" fill="url(#bg)" />
+  <g opacity="0.4">
+    <circle cx="640" cy="92" r="48" fill="#f7e9b5" />
+  </g>
+  <g transform="translate(80 200)">
+    <path d="M0 180C40 120 120 40 180 20C240 0 300 40 340 80C380 120 420 160 480 160C540 160 600 120 660 80C720 40 760 20 800 0V220H0V180Z" fill="#1b2b4a" opacity="0.45"/>
+  </g>
+  <g transform="translate(120 190)">
+    <path d="M20 210H660V40C620 20 580 10 520 20C470 28 420 64 360 64C300 64 250 30 200 20C140 8 80 30 20 60V210Z" fill="url(#rock)" />
+    <rect x="100" y="120" width="80" height="70" rx="12" fill="#352a1f" opacity="0.85" />
+    <rect x="240" y="90" width="96" height="120" rx="16" fill="#352a1f" opacity="0.85" />
+    <rect x="400" y="110" width="88" height="100" rx="14" fill="#352a1f" opacity="0.85" />
+    <rect x="540" y="130" width="70" height="80" rx="12" fill="#352a1f" opacity="0.85" />
+  </g>
+  <text x="60" y="80" fill="#fdf7eb" font-family="'Noto Sans SC', 'Source Han Sans SC', sans-serif" font-size="44" font-weight="700">云冈石窟</text>
+  <text x="60" y="120" fill="#fdf7eb" font-family="'Noto Sans SC', sans-serif" font-size="20" opacity="0.8">北魏石窟艺术宝库 · 大同</text>
+</svg>

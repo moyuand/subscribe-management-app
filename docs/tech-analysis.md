@@ -3,7 +3,7 @@
 ## 1. 总体架构
 - **前端**：基于 React + TypeScript 语法的单页应用，使用 Vite（内置 esbuild）进行构建与开发调试，减少对额外 React 插件的依赖以适配受限网络环境。
 - **后端（计划）**：初期可采用静态数据或轻量 Serverless API；长期目标是 Node.js (NestJS) 或 Python (FastAPI) 提供 REST/GraphQL 服务，连接数据库。
-- **地图服务**：选用 MapLibre GL JS + react-map-gl 实现矢量地图，结合 GeoJSON 数据展示古建分布。
+- **地图服务**：当前采用 Leaflet + React Leaflet 渲染开源瓦片地图，结合 GeoJSON 数据展示古建分布。
 - **数据存储**：原型阶段使用 JSON/静态文件；生产阶段采用 PostgreSQL + PostGIS 支持地理查询，或 MongoDB + GeoJSON。
 - **部署**：前端托管在静态资源平台（Vercel、Netlify）或云服务器 Nginx；后端与数据库部署在云服务（阿里云、腾讯云）。
 
@@ -11,7 +11,7 @@
 - **状态管理**：
   - 原型阶段以 Zustand 管理筛选、收藏等轻量全局状态，静态数据直接在前端维护；
   - 若后续引入实时 API，再扩展使用 React Query 或 SWR 处理异步数据。
-- **地图组件**：使用 `react-map-gl`（Mapbox/MapLibre 封装），配合 MapLibre 开源底图；当前选用 Carto Voyager 矢量样式以提供详细道路、行政区与地标标注，可拓展热力图与聚合层。
+- **地图组件**：使用 `react-leaflet` 与 Leaflet 原生瓦片图层，搭配自定义 GeoJSON 图层实现省界、地市边界与古建标记，后续可通过插件拓展聚合与热力图效果。
 - **UI 框架**：Tailwind CSS 提供原子化样式，并结合自定义品牌色系营造古建氛围。
 - **构建策略**：
   - 采用 Vite 原生 jsx/tsx 支持，无需 `@vitejs/plugin-react`；通过 `esbuild` 配置 `jsx: 'automatic'` 保留 React 17+ 新 JSX 转换。
@@ -40,7 +40,7 @@
 | MapLibre GL JS | 开源免费、兼容 Mapbox 样式、可自建底图服务 | 需自建或选择第三方瓦片服务 | 预算有限、需完全可控 |
 | Leaflet | 学习成本低、插件丰富、轻量 | 基于瓦片地图，3D/矢量效果有限 | 基础功能、数据量不大 |
 
-推荐选择 **MapLibre GL JS + react-map-gl**，同时自建或使用开源瓦片（如天地图、OSM）。
+在当前阶段优先选择 **Leaflet + React Leaflet**，直接加载 OpenStreetMap 等开源瓦片即可满足展示需求，后续如需更强的矢量渲染能力再评估迁移至 MapLibre。
 
 ## 6. DevOps 与协作
 - **代码规范**：ESLint + Prettier + Stylelint（后续可补充），采用 Husky + lint-staged 强制提交前检查。

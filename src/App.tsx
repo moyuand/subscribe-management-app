@@ -122,7 +122,10 @@ export default function App() {
             </p>
           </section>
         </div>
-        <section id="map" className="flex flex-1 flex-col gap-4 lg:max-w-3xl">
+        <section
+          id="map"
+          className="flex flex-1 flex-col gap-4 lg:max-w-3xl lg:self-start lg:sticky lg:top-24"
+        >
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold text-white">古建地图</h2>

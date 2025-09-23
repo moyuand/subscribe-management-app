@@ -69,7 +69,29 @@ export default function App() {
     <div className="flex min-h-screen flex-col bg-slate-950 text-slate-100">
       <Header />
       <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-6 py-6 lg:flex-row">
-        <div className="flex w-full flex-1 flex-col gap-4 lg:max-w-md">
+        <section
+          id="map"
+          className="order-1 sticky top-0 z-10 flex w-full flex-col gap-4 rounded-3xl bg-slate-950 pb-6 lg:order-2 lg:flex-1 lg:max-w-3xl lg:self-start lg:sticky lg:bg-transparent lg:pb-0 lg:top-24"
+        >
+          <div className="order-2 flex items-center justify-between lg:order-1">
+            <div>
+              <h2 className="text-lg font-semibold text-white">古建地图</h2>
+              <p className="text-xs text-white/60">
+                当前筛选：
+                {filters.dynasty === '全部' ? ` 朝代 ${dynasties.length} 种` : ` ${filters.dynasty}`}
+                ·
+                {filters.category === '全部' ? ` 类型 ${categories.length} 类` : ` ${filters.category}`}
+                ·
+                {filters.level === '全部' ? ` 级别 ${levels.length} 种` : ` ${filters.level}`}
+                · {filters.openStatus}
+              </p>
+            </div>
+          </div>
+          <div className="order-1 h-[360px] sm:h-[480px] lg:order-2 lg:h-[680px] xl:h-[760px]">
+            <HeritageMap data={filteredData} selected={selected} onSelect={setSelected} />
+          </div>
+        </section>
+        <div className="order-2 flex w-full flex-1 flex-col gap-4 lg:order-1 lg:max-w-md">
           <FilterBar />
           <section className="grid grid-cols-1 gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/70 sm:grid-cols-2">
             <div>
@@ -122,28 +144,6 @@ export default function App() {
             </p>
           </section>
         </div>
-        <section
-          id="map"
-          className="flex flex-1 flex-col gap-4 lg:max-w-3xl lg:self-start lg:sticky lg:top-24"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-white">古建地图</h2>
-              <p className="text-xs text-white/60">
-                当前筛选：
-                {filters.dynasty === '全部' ? ` 朝代 ${dynasties.length} 种` : ` ${filters.dynasty}`}
-                ·
-                {filters.category === '全部' ? ` 类型 ${categories.length} 类` : ` ${filters.category}`}
-                ·
-                {filters.level === '全部' ? ` 级别 ${levels.length} 种` : ` ${filters.level}`}
-                · {filters.openStatus}
-              </p>
-            </div>
-          </div>
-          <div className="h-[480px] sm:h-[560px] lg:h-[680px] xl:h-[760px]">
-            <HeritageMap data={filteredData} selected={selected} onSelect={setSelected} />
-          </div>
-        </section>
       </main>
       <footer className="border-t border-white/10 bg-slate-950/80 px-6 py-4 text-center text-xs text-white/50">
         数据仅作示例展示，实际信息需以官方发布为准。© {new Date().getFullYear()} Shanxi Heritage Atlas

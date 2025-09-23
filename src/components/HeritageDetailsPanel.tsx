@@ -84,11 +84,11 @@ export function HeritageDetailsPanel({ heritage, onClear }: HeritageDetailsPanel
         <figure className="overflow-hidden rounded-xl border border-white/10">
           <img
             src={heritage.images[0]}
-            alt={`${heritage.name} 示意图`}
+            alt={`${heritage.name} 风貌插画`}
             className="h-40 w-full object-cover"
             loading="lazy"
           />
-          <figcaption className="px-3 py-2 text-xs text-white/50">示意图片，具体以现场为准</figcaption>
+          <figcaption className="px-3 py-2 text-xs text-white/50">手绘风格插画，具体以现场为准</figcaption>
         </figure>
       ) : null}
     </article>

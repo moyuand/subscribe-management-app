@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import Map, { MapRef, Marker, NavigationControl, Popup, ViewState } from 'react-map-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { Heritage } from '@/types/heritage';
+import type { Map as MaplibreMap } from 'maplibre-gl';
 
-const MAP_STYLE = 'https://demotiles.maplibre.org/style.json';
+const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json';
 const MAP_LIB_PROMISE = import('maplibre-gl');
+const DEFAULT_FOCUS_ZOOM = 11;
 
 interface HeritageMapProps {
   data: Heritage[];
@@ -20,20 +22,55 @@ const INITIAL_VIEW_STATE: Partial<ViewState> = {
 
 export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
   const mapRef = useRef<MapRef | null>(null);
+  const pendingSelectionRef = useRef<Heritage | null>(null);
+
+  const focusOnHeritage = useCallback(
+    (heritage: Heritage, mapInstance?: MaplibreMap) => {
+      const map = mapInstance ?? mapRef.current?.getMap();
+      if (!map) {
+        return;
+      }
+
+      const currentZoom = map.getZoom();
+      const targetZoom = Math.max(heritage.mapZoom ?? DEFAULT_FOCUS_ZOOM, currentZoom);
+
+      map.flyTo({
+        center: [heritage.longitude, heritage.latitude],
+        zoom: targetZoom,
+        duration: 1000,
+        essential: true,
+        padding: { top: 48, bottom: 240, left: 72, right: 72 },
+      });
+    },
+    []
+  );
 
   useEffect(() => {
-    if (!selected || !mapRef.current) {
+    if (!selected) {
+      pendingSelectionRef.current = null;
       return;
     }
 
-    const map = mapRef.current.getMap();
-    const currentZoom = map.getZoom();
-    map.flyTo({
-      center: [selected.longitude, selected.latitude],
-      zoom: currentZoom < 7 ? 7 : currentZoom,
-      duration: 800,
-    });
-  }, [selected]);
+    const map = mapRef.current?.getMap();
+
+    if (!map || !map.isStyleLoaded()) {
+      pendingSelectionRef.current = selected;
+      return;
+    }
+
+    pendingSelectionRef.current = null;
+    focusOnHeritage(selected, map);
+  }, [focusOnHeritage, selected]);
+
+  const handleMapLoad = useCallback(
+    (event: { target: MaplibreMap }) => {
+      if (pendingSelectionRef.current) {
+        focusOnHeritage(pendingSelectionRef.current, event.target);
+        pendingSelectionRef.current = null;
+      }
+    },
+    [focusOnHeritage]
+  );
 
   const markers = useMemo(
     () =>
@@ -72,11 +109,12 @@ export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
         ref={mapRef}
         mapStyle={MAP_STYLE}
         initialViewState={INITIAL_VIEW_STATE}
-        attributionControl={false}
+        attributionControl
         style={{ width: '100%', height: '100%' }}
         reuseMaps
         mapLib={MAP_LIB_PROMISE}
         onClick={() => onSelect(null)}
+        onLoad={handleMapLoad}
       >
         <NavigationControl position="top-left" visualizePitch={false} />
         {markers}

@@ -2,15 +2,41 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import Map, { Layer, MapRef, Marker, NavigationControl, Popup, Source, ViewState } from 'react-map-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { Heritage } from '@/types/heritage';
-import type { LngLatBoundsLike, Map as MaplibreMap } from 'maplibre-gl';
+import type { LngLatBoundsLike, Map as MaplibreMap, StyleSpecification } from 'maplibre-gl';
 import { shanxiBoundary, shanxiPrefectures } from '@/data/shanxiBoundary';
-const MAP_STYLE_URL = 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json';
 const MAP_LIB_PROMISE = import('maplibre-gl');
 const DEFAULT_FOCUS_ZOOM = 11;
 const SHANXI_BOUNDS: LngLatBoundsLike = [
   [109.5, 34.3],
   [114.7, 40.9],
 ];
+
+const CHINESE_BASEMAP_STYLE: StyleSpecification = {
+  version: 8,
+  name: 'OpenStreetMap Chinese Raster',
+  sources: {
+    'osm-chinese': {
+      type: 'raster',
+      tiles: [
+        'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      ],
+      tileSize: 256,
+      attribution: '© OpenStreetMap 贡献者',
+      maxzoom: 19,
+    },
+  },
+  layers: [
+    {
+      id: 'osm-chinese-tiles',
+      type: 'raster',
+      source: 'osm-chinese',
+      minzoom: 0,
+      maxzoom: 22,
+    },
+  ],
+};
 
 interface HeritageMapProps {
   data: Heritage[];
@@ -138,7 +164,7 @@ export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
       <Map
         id="heritage-map"
         ref={mapRef}
-        mapStyle={MAP_STYLE_URL}
+        mapStyle={CHINESE_BASEMAP_STYLE}
         initialViewState={INITIAL_VIEW_STATE}
         attributionControl
         style={{ width: '100%', height: '100%' }}

@@ -9,12 +9,12 @@ import Map, {
 } from 'react-map-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { Heritage } from '@/types/heritage';
-import maplibregl from 'maplibre-gl';
-import MapLibreWorker from 'maplibre-gl/dist/maplibre-gl-csp-worker?worker';
 import type { LngLatBoundsLike, Map as MaplibreMap, StyleSpecification } from 'maplibre-gl';
 import type { FeatureCollection, Point } from 'geojson';
 import type { MapLayerMouseEvent } from 'react-map-gl';
 import { shanxiBoundary, shanxiPrefectures } from '@/data/shanxiBoundary';
+
+const MAP_LIB_PROMISE = import('maplibre-gl');
 const DEFAULT_FOCUS_ZOOM = 11;
 const SHANXI_BOUNDS: LngLatBoundsLike = [
   [109.5, 34.3],
@@ -101,10 +101,6 @@ const ACTIVE_MARKER_IMAGE =
     </linearGradient>
   </defs>
 </svg>`);
-
-if (typeof window !== 'undefined' && !(maplibregl as { workerClass?: typeof Worker }).workerClass) {
-  (maplibregl as { workerClass?: typeof Worker }).workerClass = MapLibreWorker;
-}
 
 export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
   const mapRef = useRef<MapRef | null>(null);
@@ -310,7 +306,7 @@ export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
         attributionControl
         style={{ width: '100%', height: '100%' }}
         reuseMaps
-        mapLib={maplibregl}
+        mapLib={MAP_LIB_PROMISE}
         maxBounds={SHANXI_BOUNDS}
         interactiveLayerIds={interactiveLayerIds}
         onClick={handleMapClick}

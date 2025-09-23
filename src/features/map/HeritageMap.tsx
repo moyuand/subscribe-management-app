@@ -50,6 +50,65 @@ const INITIAL_VIEW_STATE: Partial<ViewState> = {
   zoom: 6,
 };
 
+interface HeritageMarkerIconProps {
+  active: boolean;
+}
+
+function HeritageMarkerIcon({ active }: HeritageMarkerIconProps) {
+  const pointerFill = active ? '#38bdf8' : '#F97316';
+  const gradientStart = active ? '#7dd3fc' : '#FDBA74';
+  const gradientEnd = active ? '#0ea5e9' : '#F97316';
+  const bodyFill = active ? '#0F172A' : '#1E293B';
+  const hallFill = active ? '#bae6fd' : '#F1F5F9';
+  const roofFill = active ? '#0ea5e9' : '#F97316';
+  const windowFill = active ? '#e0f2fe' : '#F8FAFC';
+
+  return (
+    <svg width="48" height="64" viewBox="0 0 48 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path
+        d="M24 2C13.402 2 4.5 10.902 4.5 21.5C4.5 34.051 18.534 46.962 23.075 51.106C23.618 51.598 24.382 51.598 24.925 51.106C29.466 46.962 43.5 34.051 43.5 21.5C43.5 10.902 34.598 2 24 2Z"
+        fill={pointerFill}
+        opacity={active ? 0.95 : 0.9}
+      />
+      <path
+        d="M24 6.5C15.1634 6.5 8 13.6634 8 22.5C8 32.1939 18.4794 43.0716 23.2188 47.375C23.6648 47.7823 24.3352 47.7823 24.7812 47.375C29.5206 43.0716 40 32.1939 40 22.5C40 13.6634 32.8366 6.5 24 6.5Z"
+        fill="url(#markerGradient)"
+      />
+      <path
+        d="M17.5 19L24 14L30.5 19H17.5Z"
+        fill={roofFill}
+      />
+      <path
+        d="M16.25 19C15.2835 19 14.5 19.7835 14.5 20.75V28H33.5V20.75C33.5 19.7835 32.7165 19 31.75 19H16.25Z"
+        fill={bodyFill}
+      />
+      <path
+        d="M14.5 29.75C14.5 28.7835 15.2835 28 16.25 28H31.75C32.7165 28 33.5 28.7835 33.5 29.75V35.25C33.5 36.2165 32.7165 37 31.75 37H16.25C15.2835 37 14.5 36.2165 14.5 35.25V29.75Z"
+        fill={hallFill}
+      />
+      <path
+        d="M20.25 22.5H27.75V31.5C27.75 32.4665 26.9665 33.25 26 33.25H22C21.0335 33.25 20.25 32.4665 20.25 31.5V22.5Z"
+        fill={roofFill}
+      />
+      <path
+        d="M18.25 31C18.25 30.4477 18.6977 30 19.25 30C19.8023 30 20.25 30.4477 20.25 31V34.25H18.25V31Z"
+        fill={bodyFill}
+      />
+      <path
+        d="M27.75 31C27.75 30.4477 28.1977 30 28.75 30C29.3023 30 29.75 30.4477 29.75 31V34.25H27.75V31Z"
+        fill={bodyFill}
+      />
+      <circle cx="24" cy="23.5" r="2" fill={windowFill} />
+      <defs>
+        <linearGradient id="markerGradient" x1="24" y1="6.5" x2="24" y2="47.5" gradientUnits="userSpaceOnUse">
+          <stop stopColor={gradientStart} />
+          <stop offset="1" stopColor={gradientEnd} />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
 export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
   const mapRef = useRef<MapRef | null>(null);
   const pendingSelectionRef = useRef<Heritage | null>(null);
@@ -159,13 +218,15 @@ export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
             }}
           >
             <span
-              className={`inline-flex h-7 w-7 -translate-y-2 items-center justify-center rounded-full text-xs font-semibold shadow-lg shadow-black/30 ring-4 transition-transform ${
+              className={`inline-flex -translate-y-5 cursor-pointer items-center justify-center transition-transform duration-300 ${
                 isActive
-                  ? 'bg-brand-300 text-slate-900 ring-brand-300/40 scale-110'
-                  : 'bg-brand-500 text-white ring-brand-500/30 hover:scale-110'
+                  ? 'scale-110 drop-shadow-[0_0_18px_rgba(56,189,248,0.65)]'
+                  : 'opacity-95 drop-shadow-[0_12px_22px_rgba(15,23,42,0.55)] hover:scale-110'
               }`}
+              aria-label={heritage.name}
+              role="img"
             >
-              {heritage.name.slice(0, 1)}
+              <HeritageMarkerIcon active={isActive} />
             </span>
           </Marker>
         );

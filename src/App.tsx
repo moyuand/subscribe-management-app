@@ -140,7 +140,7 @@ export default function App() {
               </p>
             </div>
           </div>
-          <div className="h-[360px] sm:h-[420px] lg:h-[520px]">
+          <div className="h-[480px] sm:h-[560px] lg:h-[680px] xl:h-[760px]">
             <HeritageMap data={filteredData} selected={selected} onSelect={setSelected} />
           </div>
         </section>

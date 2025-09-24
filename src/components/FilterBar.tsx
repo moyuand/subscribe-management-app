@@ -3,7 +3,11 @@ import { useFilters } from '@/store/useFilters';
 
 const openStatuses = ['全部', '开放', '维护中', '暂未开放'];
 
-export function FilterBar() {
+type FilterBarProps = {
+  className?: string;
+};
+
+export function FilterBar({ className }: FilterBarProps) {
   const {
     search,
     setSearch,
@@ -40,8 +44,12 @@ export function FilterBar() {
     </label>
   );
 
+  const containerClasses = className
+    ? `flex h-full flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/20 backdrop-blur ${className}`
+    : 'flex h-full flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/20 backdrop-blur';
+
   return (
-    <section className="flex h-full flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/20 backdrop-blur">
+    <section className={containerClasses}>
       <div className="relative">
         <label className="sr-only" htmlFor="heritage-search">
           搜索古建
@@ -63,7 +71,7 @@ export function FilterBar() {
       <button
         type="button"
         onClick={reset}
-        className="self-start rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-400"
+        className="w-full rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-400 sm:w-auto sm:self-start"
       >
         重置筛选
       </button>

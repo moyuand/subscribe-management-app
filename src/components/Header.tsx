@@ -1,10 +1,18 @@
-import { useFilters } from '@/store/useFilters';
+type HeaderProps = {
+  onOpenFilter?: () => void;
+  filteredCount?: number;
+  totalCount?: number;
+  activeFilterSummary?: string;
+};
 
-export function Header() {
-  const { search, setSearch } = useFilters();
-
+export function Header({
+  onOpenFilter,
+  filteredCount,
+  totalCount,
+  activeFilterSummary,
+}: HeaderProps) {
   return (
-    <header className="sticky top-0 z-50 flex flex-col gap-4 border-b border-white/10 bg-slate-950/80 px-6 py-4 backdrop-blur">
+    <header className="z-50 flex flex-col gap-4 border-b border-white/10 bg-slate-950/80 px-6 py-4 backdrop-blur lg:sticky lg:top-0">
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-sm uppercase tracking-[0.4em] text-brand-300">Shanxi Heritage Atlas</p>
@@ -22,18 +30,26 @@ export function Header() {
           </a>
         </div>
       </div>
-      <div className="relative">
-        <label className="sr-only" htmlFor="heritage-search">
-          搜索古建
-        </label>
-        <input
-          id="heritage-search"
-          className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white placeholder:text-white/40 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
-          placeholder="搜索古建名称、城市或关键词..."
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-        />
-      </div>
+      {onOpenFilter ? (
+        <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 text-xs text-white/60 shadow-lg shadow-black/20 sm:hidden">
+          <div className="flex flex-col gap-1">
+            <span className="text-[0.65rem] uppercase tracking-[0.3em] text-white/40">筛选结果</span>
+            {typeof filteredCount === 'number' && typeof totalCount === 'number' ? (
+              <span className="text-base font-semibold text-white">
+                {filteredCount} / {totalCount}
+              </span>
+            ) : null}
+            {activeFilterSummary ? <span>{activeFilterSummary}</span> : null}
+          </div>
+          <button
+            type="button"
+            onClick={onOpenFilter}
+            className="w-full rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white shadow transition hover:bg-brand-400"
+          >
+            打开筛选
+          </button>
+        </div>
+      ) : null}
     </header>
   );
 }

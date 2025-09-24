@@ -1,0 +1,30 @@
+<svg width="800" height="480" viewBox="0 0 800 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2c233f" />
+      <stop offset="50%" stop-color="#4a3a6e" />
+      <stop offset="100%" stop-color="#d3a9c2" />
+    </linearGradient>
+    <linearGradient id="hall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f2d1d6" />
+      <stop offset="100%" stop-color="#a46a7e" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="480" fill="url(#bg)" />
+  <g opacity="0.32">
+    <circle cx="160" cy="90" r="48" fill="#f8e2bf" />
+  </g>
+  <g transform="translate(100 210)">
+    <rect x="0" y="120" width="600" height="70" fill="#2e1f3b" opacity="0.6" />
+    <rect x="40" y="40" width="520" height="110" fill="#3f2a4c" />
+    <rect x="120" y="0" width="360" height="70" fill="url(#hall)" />
+    <rect x="80" y="50" width="440" height="16" fill="#372438" />
+    <rect x="120" y="26" width="360" height="36" fill="#372438" opacity="0.7" />
+    <rect x="150" y="30" width="70" height="28" fill="#1d1320" />
+    <rect x="270" y="30" width="70" height="28" fill="#1d1320" />
+    <rect x="390" y="30" width="70" height="28" fill="#1d1320" />
+    <path d="M120 0H480L440 -48H160L120 0Z" fill="#7c3b5a" />
+  </g>
+  <text x="60" y="78" fill="#f8f1f7" font-family="'Noto Sans SC', 'Source Han Sans SC', sans-serif" font-size="40" font-weight="700">双林寺</text>
+  <text x="60" y="118" fill="#f8f1f7" font-family="'Noto Sans SC', sans-serif" font-size="20" opacity="0.85">彩塑艺术瑰宝 · 平遥</text>
+</svg>

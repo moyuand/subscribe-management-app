@@ -119,7 +119,12 @@ export default function App() {
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-950 text-slate-100">
-      <Header />
+      <Header
+        onOpenFilter={() => setFilterOpen(true)}
+        filteredCount={filteredData.length}
+        totalCount={heritages.length}
+        activeFilterSummary={activeFilterSummary}
+      />
       <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-6 py-6">
         <div className="hidden gap-4 lg:flex">
           <div className="w-full max-w-xl">
@@ -150,13 +155,6 @@ export default function App() {
                   <p className="mt-1 text-lg font-semibold text-white">{filteredData.length} 项</p>
                   <p className="text-xs text-white/50">{activeFilterSummary}</p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setFilterOpen(true)}
-                  className="w-full rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white shadow transition hover:bg-brand-400"
-                >
-                  打开筛选
-                </button>
               </div>
             </div>
             <section className="flex-1 overflow-y-auto pr-2">

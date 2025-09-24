@@ -4,7 +4,19 @@ import { useFilters } from '@/store/useFilters';
 const openStatuses = ['全部', '开放', '维护中', '暂未开放'];
 
 export function FilterBar() {
-  const { dynasty, category, level, openStatus, setDynasty, setCategory, setLevel, setOpenStatus, reset } = useFilters();
+  const {
+    search,
+    setSearch,
+    dynasty,
+    category,
+    level,
+    openStatus,
+    setDynasty,
+    setCategory,
+    setLevel,
+    setOpenStatus,
+    reset,
+  } = useFilters();
 
   const renderSelect = (
     label: string,
@@ -29,7 +41,19 @@ export function FilterBar() {
   );
 
   return (
-    <section className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/20 backdrop-blur">
+    <section className="flex h-full flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/20 backdrop-blur">
+      <div className="relative">
+        <label className="sr-only" htmlFor="heritage-search">
+          搜索古建
+        </label>
+        <input
+          id="heritage-search"
+          className="w-full rounded-xl border border-white/10 bg-slate-950/40 px-4 py-2 text-sm text-white placeholder:text-white/40 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
+          placeholder="搜索古建名称、城市或关键词..."
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+        />
+      </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {renderSelect('朝代', dynasty, setDynasty, ['全部', ...dynasties])}
         {renderSelect('建筑类型', category, setCategory, ['全部', ...categories])}

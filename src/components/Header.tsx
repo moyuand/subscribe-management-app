@@ -1,8 +1,4 @@
-import { useFilters } from '@/store/useFilters';
-
 export function Header() {
-  const { search, setSearch } = useFilters();
-
   return (
     <header className="z-50 flex flex-col gap-4 border-b border-white/10 bg-slate-950/80 px-6 py-4 backdrop-blur lg:sticky lg:top-0">
       <div className="flex items-center justify-between gap-4">
@@ -21,18 +17,6 @@ export function Header() {
             推荐路线
           </a>
         </div>
-      </div>
-      <div className="relative">
-        <label className="sr-only" htmlFor="heritage-search">
-          搜索古建
-        </label>
-        <input
-          id="heritage-search"
-          className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white placeholder:text-white/40 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
-          placeholder="搜索古建名称、城市或关键词..."
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-        />
       </div>
     </header>
   );

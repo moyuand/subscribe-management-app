@@ -1,14 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import {
-  GeoJSON,
-  MapContainer,
-  Marker,
-  Popup,
-  TileLayer,
-  ZoomControl,
-  useMap,
-  useMapEvent,
-} from 'react-leaflet';
+import { GeoJSON, MapContainer, Marker, TileLayer, ZoomControl, useMap, useMapEvent } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import type { Heritage } from '@/types/heritage';
@@ -131,7 +122,6 @@ export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
         iconUrl: DEFAULT_MARKER_IMAGE,
         iconSize: [48, 64],
         iconAnchor: [24, 60],
-        popupAnchor: [0, -60],
         className: 'heritage-marker',
       }),
     []
@@ -143,7 +133,6 @@ export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
         iconUrl: ACTIVE_MARKER_IMAGE,
         iconSize: [52, 68],
         iconAnchor: [26, 64],
-        popupAnchor: [0, -64],
         className: 'heritage-marker-active',
       }),
     []
@@ -181,19 +170,6 @@ export function HeritageMap({ data, selected, onSelect }: HeritageMapProps) {
             }}
           />
         ))}
-        {selected ? (
-          <Popup
-            position={[selected.latitude, selected.longitude]}
-            closeOnClick={false}
-            autoPan={false}
-            className="max-w-xs overflow-hidden rounded-2xl bg-slate-900/95 text-white shadow-xl"
-            eventHandlers={{ close: () => onSelect(null) }}
-          >
-            <div className="px-2 py-1">
-              <h3 className="text-base font-semibold text-brand-200">{selected.name}</h3>
-            </div>
-          </Popup>
-        ) : null}
         <ZoomControl position="topleft" />
         <MapFocusHandler selected={selected} onSelect={onSelect} />
       </MapContainer>

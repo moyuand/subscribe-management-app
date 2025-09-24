@@ -68,32 +68,12 @@ export default function App() {
   return (
     <div className="flex min-h-screen flex-col bg-slate-950 text-slate-100">
       <Header />
-      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-6 py-6 lg:flex-row">
-        <section
-          id="map"
-          className="order-1 sticky top-0 z-10 flex w-full flex-col gap-4 rounded-3xl bg-slate-950 pb-6 lg:order-2 lg:flex-1 lg:max-w-3xl lg:self-start lg:sticky lg:bg-transparent lg:pb-0 lg:top-24"
-        >
-          <div className="order-2 hidden items-center justify-between lg:order-1 lg:flex">
-            <div>
-              <h2 className="text-lg font-semibold text-white">古建地图</h2>
-              <p className="text-xs text-white/60">
-                当前筛选：
-                {filters.dynasty === '全部' ? ` 朝代 ${dynasties.length} 种` : ` ${filters.dynasty}`}
-                ·
-                {filters.category === '全部' ? ` 类型 ${categories.length} 类` : ` ${filters.category}`}
-                ·
-                {filters.level === '全部' ? ` 级别 ${levels.length} 种` : ` ${filters.level}`}
-                · {filters.openStatus}
-              </p>
-            </div>
+      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-6 py-6">
+        <div className="flex flex-col gap-4 lg:flex-row">
+          <div className="w-full lg:max-w-xl">
+            <FilterBar />
           </div>
-          <div className="order-1 h-[360px] sm:h-[480px] lg:order-2 lg:h-[680px] xl:h-[760px]">
-            <HeritageMap data={filteredData} selected={selected} onSelect={setSelected} />
-          </div>
-        </section>
-        <div className="order-2 flex w-full flex-1 flex-col gap-4 lg:order-1 lg:max-w-md">
-          <FilterBar />
-          <section className="grid grid-cols-1 gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/70 sm:grid-cols-2">
+          <section className="grid w-full flex-1 grid-cols-1 gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/70 sm:grid-cols-2">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-white/40">覆盖古建</p>
               <p className="mt-1 text-2xl font-semibold text-white">{summary.total}</p>
@@ -115,34 +95,60 @@ export default function App() {
               <p className="text-xs text-white/50">数据来源国家及省级名录</p>
             </div>
           </section>
-          <section className="flex-1 overflow-y-auto pr-2">
-            <h2 className="mb-4 text-lg font-semibold text-brand-200">
-              古建列表（{filteredData.length} / {heritages.length}）
-            </h2>
-            <HeritageList data={filteredData} selectedId={selected?.id ?? null} onSelect={handleSelect} />
-          </section>
-          <HeritageDetailsPanel heritage={selected} onClear={handleClear} />
+        </div>
+        <div className="flex flex-col gap-6 lg:flex-row">
           <section
-            id="about"
-            className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-relaxed text-white/70"
+            id="map"
+            className="order-1 sticky top-0 z-10 flex w-full flex-col gap-4 rounded-3xl bg-slate-950 pb-6 lg:order-2 lg:flex-1 lg:max-w-3xl lg:self-start lg:sticky lg:bg-transparent lg:pb-0 lg:top-24"
           >
-            <h2 className="mb-2 text-base font-semibold text-white">项目简介</h2>
-            <p>
-              “山西古建地图”旨在通过互动地图与精选内容，呈现山西省丰富的古建筑遗产，帮助用户快速了解各地古建的历史背景、建筑特色与参观信息。
-            </p>
-            <p className="mt-2">
-              当前版本收录 {heritages.length} 处代表性遗址，后续将持续扩展数据范围，引入路线规划、行程管理等功能。
-            </p>
+            <div className="order-2 hidden items-center justify-between lg:order-1 lg:flex">
+              <div>
+                <h2 className="text-lg font-semibold text-white">古建地图</h2>
+                <p className="text-xs text-white/60">
+                  当前筛选：
+                  {filters.dynasty === '全部' ? ` 朝代 ${dynasties.length} 种` : ` ${filters.dynasty}`}
+                  ·
+                  {filters.category === '全部' ? ` 类型 ${categories.length} 类` : ` ${filters.category}`}
+                  ·
+                  {filters.level === '全部' ? ` 级别 ${levels.length} 种` : ` ${filters.level}`}
+                  · {filters.openStatus}
+                </p>
+              </div>
+            </div>
+            <div className="order-1 h-[360px] sm:h-[480px] lg:order-2 lg:h-[680px] xl:h-[760px]">
+              <HeritageMap data={filteredData} selected={selected} onSelect={setSelected} />
+            </div>
           </section>
-          <section
-            id="routes"
-            className="rounded-2xl border border-dashed border-brand-500/30 bg-brand-500/5 p-4 text-sm text-brand-100"
-          >
-            <h2 className="mb-2 text-base font-semibold text-brand-200">路线规划预告</h2>
-            <p>
-              即将上线根据城市、朝代、建筑主题生成的推荐路线，并支持导出行程单、地图导航链接。
-            </p>
-          </section>
+          <div className="order-2 flex w-full flex-1 flex-col gap-4 lg:order-1 lg:max-w-md">
+            <section className="flex-1 overflow-y-auto pr-2">
+              <h2 className="mb-4 text-lg font-semibold text-brand-200">
+                古建列表（{filteredData.length} / {heritages.length}）
+              </h2>
+              <HeritageList data={filteredData} selectedId={selected?.id ?? null} onSelect={handleSelect} />
+            </section>
+            <HeritageDetailsPanel heritage={selected} onClear={handleClear} />
+            <section
+              id="about"
+              className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-relaxed text-white/70"
+            >
+              <h2 className="mb-2 text-base font-semibold text-white">项目简介</h2>
+              <p>
+                “山西古建地图”旨在通过互动地图与精选内容，呈现山西省丰富的古建筑遗产，帮助用户快速了解各地古建的历史背景、建筑特色与参观信息。
+              </p>
+              <p className="mt-2">
+                当前版本收录 {heritages.length} 处代表性遗址，后续将持续扩展数据范围，引入路线规划、行程管理等功能。
+              </p>
+            </section>
+            <section
+              id="routes"
+              className="rounded-2xl border border-dashed border-brand-500/30 bg-brand-500/5 p-4 text-sm text-brand-100"
+            >
+              <h2 className="mb-2 text-base font-semibold text-brand-200">路线规划预告</h2>
+              <p>
+                即将上线根据城市、朝代、建筑主题生成的推荐路线，并支持导出行程单、地图导航链接。
+              </p>
+            </section>
+          </div>
         </div>
       </main>
       <footer className="border-t border-white/10 bg-slate-950/80 px-6 py-4 text-center text-xs text-white/50">
